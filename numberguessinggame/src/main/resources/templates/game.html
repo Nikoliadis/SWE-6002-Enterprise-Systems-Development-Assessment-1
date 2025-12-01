@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Result</title>
+</head>
+<body>
+<h1>Correct!</h1>
+
+<p th:text="'Well done, ' + ${playerName} + '!'"></p>
+<p th:text="'You guessed it in ' + ${attempts} + ' attempts.'"></p>
+
+<h2>Previous Games</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Attempts</th>
+        <th>Target Number</th>
+        <th>Date Played</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="r : ${results}">
+        <td th:text="${r.id}"></td>
+        <td th:text="${r.attempts}"></td>
+        <td th:text="${r.targetNumber}"></td>
+        <td th:text="${r.playedAt}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<form th:action="@{/restart}" method="post">
+    <button type="submit">Play Again</button>
+</form>
+
+<form th:action="@{/}" method="get">
+    <button type="submit">Change Player</button>
+</form>
+
+</body>
+</html>
