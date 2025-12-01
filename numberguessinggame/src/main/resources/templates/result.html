@@ -3,42 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <title>Game Result</title>
+
+    <link rel="icon" type="image/png" sizes="64x64" href="/icons/dice-cube-64.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/dice-cube-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/dice-cube-16.png">
+
+    <style>
+        /* ίδιες theme vars όπως πριν */
+        :root {
+            color-scheme: dark light;
+            --bg-gradient: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+            --card-bg: rgba(15, 23, 42, 0.96);
+            --card-border: rgba(148, 163, 184, 0.25);
+            --text-color: #e5e7eb;
+            --muted: #9ca3af;
+            --shadow: 0 18px 45px rgba(0, 0, 0, 0.65);
+            --accent: #22c55e;
+            --accent2: #16a34a;
+            --table-head-bg: #020617;
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-gradient: radial-gradient(circle at top, #e5f0ff 0, #eef2ff 45%, #e5e7eb 100%);
+                --card-bg: #ffffff;
+                --card-border: rgba(148, 163, 184, 0.4);
+                --text-color: #0f172a;
+                --muted: #6b7280;
+                --shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+                --table-head-bg: #f3f4ff;
+            }
+        }
+
+        body[data-theme="dark"] {
+            --bg-gradient: radial-gradient(circle at top, #1e293b 0, #020617 55%, #000 100%);
+            --card-bg: rgba(15, 23, 42, 0.96);
+            --card-border: rgba(148, 163, 184, 0.25);
+            --text-color: #e5e7eb;
+            --muted: #9ca3af;
+            --shadow: 0 18px 45px rgba(0, 0, 0, 0.65);
+            --table-head-bg: #020617;
+        }
+
+        body[data-theme="light"] {
+            --bg-gradient: radial-gradient(circle at top, #e5f0ff 0, #eef2ff 45%, #e5e7eb 100%);
+            --card-bg: #ffffff;
+            --card-border: rgba(148, 163, 184, 0.4);
+            --text-color: #0f172a;
+            --muted: #6b7280;
+            --shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+            --table-head-bg: #f3f4ff;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text-color);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 60px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .card {
+            position: relative;
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 28px 32px 32px;
+            box-shadow: var(--shadow);
+            width: 640px;
+            max-width: 95vw;
+            border: 1px solid var(--card-border);
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-weight: 700;
+            font-size: 26px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 18px;
+        }
+
+        .summary {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .summary p {
+            margin: 4px 0;
+        }
+
+        h2 {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: var(--table-head-bg);
+        }
+
+        th, td {
+            padding: 8px 10px;
+            border-bottom: 1px solid rgba(31, 41, 55, 0.8);
+            text-align: left;
+        }
+
+        th {
+            font-weight: 600;
+            color: #cbd5f5;
+        }
+
+        tbody tr:nth-child(odd) {
+            background: rgba(15, 23, 42, 0.92);
+        }
+
+        tbody tr:nth-child(even) {
+            background: rgba(15, 23, 42, 0.85);
+        }
+
+        body[data-theme="light"] tbody tr:nth-child(odd) {
+            background: #f9fafb;
+        }
+
+        body[data-theme="light"] tbody tr:nth-child(even) {
+            background: #eef2ff;
+        }
+
+        tbody tr:hover {
+            background: rgba(30, 64, 175, 0.5);
+        }
+
+        body[data-theme="light"] tbody tr:hover {
+            background: rgba(191, 219, 254, 0.9);
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        button {
+            padding: 8px 18px;
+            border-radius: 999px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.04em;
+            transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+        }
+
+        .primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: white;
+        }
+
+        .secondary {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid rgba(148, 163, 184, 0.6);
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.45);
+            filter: brightness(1.05);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            padding: 5px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            background: transparent;
+            color: var(--muted);
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(148, 163, 184, 0.12);
+        }
+
+        .theme-toggle span {
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Correct!</h1>
+<div class="card">
+    <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle color mode">
+        <span>🌙</span><span class="theme-label">Dark</span>
+    </button>
 
-<p th:text="'Well done, ' + ${playerName} + '!'"></p>
-<p th:text="'You guessed it in ' + ${attempts} + ' attempts.'"></p>
+    <h1>Correct!</h1>
+    <p class="subtitle">You found the secret number.</p>
 
-<h2>Previous Games</h2>
+    <div class="summary">
+        <p th:text="'Well done, ' + ${playerName} + '!'"></p>
+        <p th:text="'You guessed it in ' + ${attempts} + ' attempts.'"></p>
+    </div>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Attempts</th>
-        <th>Target Number</th>
-        <th>Date Played</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="r : ${results}">
-        <td th:text="${r.id}"></td>
-        <td th:text="${r.attempts}"></td>
-        <td th:text="${r.targetNumber}"></td>
-        <td th:text="${r.playedAt}"></td>
-    </tr>
-    </tbody>
-</table>
+    <h2>Previous Games</h2>
 
-<form th:action="@{/restart}" method="post">
-    <button type="submit">Play Again</button>
-</form>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Player</th>
+            <th>Attempts</th>
+            <th>Target Number</th>
+            <th>Date Played</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="r : ${results}">
+            <td th:text="${r.id}"></td>
+            <td th:text="${r.playerName}"></td>
+            <td th:text="${r.attempts}"></td>
+            <td th:text="${r.targetNumber}"></td>
+            <td th:text="${r.playedAt}"></td>
+        </tr>
+        </tbody>
+    </table>
 
-<form th:action="@{/}" method="get">
-    <button type="submit">Change Player</button>
-</form>
+
+    <div class="actions">
+        <form th:action="@{/restart}" method="post">
+            <button class="primary" type="submit">Play Again</button>
+        </form>
+
+        <form th:action="@{/}" method="get">
+            <button class="secondary" type="submit">Change Player</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const body = document.body;
+        const btn = document.getElementById('theme-toggle');
+        const label = btn ? btn.querySelector('.theme-label') : null;
+        const iconSpan = btn ? btn.querySelector('span') : null;
+
+        function getSystemTheme() {
+            return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+                ? 'light'
+                : 'dark';
+        }
+
+        function getCurrentTheme() {
+            const attr = body.getAttribute('data-theme');
+            if (attr === 'light' || attr === 'dark') return attr;
+            return getSystemTheme();
+        }
+
+        function applyInitialTheme() {
+            const stored = localStorage.getItem('theme');
+            if (stored === 'light' || stored === 'dark') {
+                body.setAttribute('data-theme', stored);
+            }
+            updateToggleLabel();
+        }
+
+        function updateToggleLabel() {
+            if (!btn || !label || !iconSpan) return;
+            const theme = getCurrentTheme();
+            if (theme === 'light') {
+                label.textContent = 'Light';
+                iconSpan.textContent = '☀';
+            } else {
+                label.textContent = 'Dark';
+                iconSpan.textContent = '🌙';
+            }
+        }
+
+        applyInitialTheme();
+
+        if (btn) {
+            btn.addEventListener('click', function () {
+                const current = getCurrentTheme();
+                const next = current === 'light' ? 'dark' : 'light';
+                body.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+                updateToggleLabel();
+            });
+        }
+    })();
+</script>
 
 </body>
 </html>
