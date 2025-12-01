@@ -36,16 +36,19 @@ public class GameController {
     @GetMapping("/game")
     public String game(HttpSession session, Model model) {
         String playerName = (String) session.getAttribute("playerName");
+
         if (playerName == null) {
             return "redirect:/";
         }
+
         model.addAttribute("playerName", playerName);
-        model.addAttribute("message", "Κάνε μία πρόβλεψη (1–100)");
+        model.addAttribute("message", "Make a guess (1–100)");
         return "game";
     }
 
     @PostMapping("/guess")
     public String makeGuess(@RequestParam int guess, HttpSession session, Model model) {
+
         String playerName = (String) session.getAttribute("playerName");
         Integer targetNumber = (Integer) session.getAttribute("targetNumber");
         Integer attempts = (Integer) session.getAttribute("attempts");
@@ -57,17 +60,29 @@ public class GameController {
         attempts++;
         session.setAttribute("attempts", attempts);
 
+        // ==== New Smart Feedback ====
+        int diff = Math.abs(guess - targetNumber);
+
         String message;
         boolean correct = false;
 
-        if (guess < targetNumber) {
-            message = "Too Low!";
-        } else if (guess > targetNumber) {
-            message = "Too High!";
-        } else {
+        if (guess == targetNumber) {
             message = "Correct!";
             correct = true;
+        } else if (guess < targetNumber) {
+            if (diff <= 5) {
+                message = "Low";        // close but low
+            } else {
+                message = "Very Low";   // far low
+            }
+        } else { // guess > targetNumber
+            if (diff <= 5) {
+                message = "High";       // close but high
+            } else {
+                message = "Very High";  // far high
+            }
         }
+        // =============================
 
         model.addAttribute("playerName", playerName);
         model.addAttribute("guess", guess);
@@ -87,12 +102,16 @@ public class GameController {
     @PostMapping("/restart")
     public String restart(HttpSession session) {
         String playerName = (String) session.getAttribute("playerName");
+
         if (playerName == null) {
             return "redirect:/";
         }
+
         int targetNumber = gameService.generateRandomNumber();
+
         session.setAttribute("targetNumber", targetNumber);
         session.setAttribute("attempts", 0);
+
         return "redirect:/game";
     }
 }

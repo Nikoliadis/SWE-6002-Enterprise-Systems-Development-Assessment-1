@@ -5,19 +5,21 @@
     <title>Game Result</title>
 </head>
 <body>
+
 <h1>Correct!</h1>
 
-<p th:text="'Μπράβο, ' + ${playerName} + '!'"></p>
-<p th:text="'Το βρήκες σε ' + ${attempts} + ' προσπάθειες.'"></p>
+<p th:text="'Well done, ' + ${playerName} + '!'"></p>
+<p th:text="'You guessed it in ' + ${attempts} + ' attempts.'"></p>
 
-<h2>Προηγούμενα παιχνίδια</h2>
+<h2>Previous Games</h2>
+
 <table border="1">
     <thead>
     <tr>
         <th>ID</th>
         <th>Attempts</th>
-        <th>Target</th>
-        <th>Date</th>
+        <th>Target Number</th>
+        <th>Date Played</th>
     </tr>
     </thead>
     <tbody>
